@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>新增规则</title>
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.v3.0.3.css" /> 
+<script type="text/javascript" src="../js/jquery.v2.2.4.js"></script> 
+<script type="text/javascript" src="../js/vue.min.v2.2.2.js"></script>
+<script type="text/javascript" src="../js/vue-resource.min.v1.3.1.js"></script>
+<script type="text/javascript" src="../js/vue-router.v3.0.0.js"></script>
+<script type="text/javascript" src="../js/common.js"></script>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="panel panel-default" id="topDiv"></div>
+		<div class="row-fluid">
+			<div class="col-md-2" id="navigationDiv"></div>
+			<div class="col-md-10">
+				<div id="DataMuduleDiv1" class="row clearfix">
+					<div class="col-md-2 column"></div>
+					<div class="col-md-6 column">
+						<div class="form-group">
+							<label for="ruleName">规则名称</label> 
+							<input type="text" class="form-control" v-model="rule.ruleName" id="ruleName" />
+						</div>
+						<div class="form-group">
+							<label for="moduleText">参数来源</label>
+							<select class="form-control" v-model="rule.ruleSource">
+								<option value="1">参数文件</option>
+								<option value="2">生成程序</option>
+							</select>
+						</div>
+						<!--   文件上传form -->
+						<form id="uploadForm" action="/GeneratorDataWeb/rule/uploadFile.do"  method="POST" enctype="multipart/form-data">
+							<div class="form-group" v-show="rule.ruleSource === '1'">
+								<label for="moduleText">上传文件</label>
+								<input id="leftFile" type="file" name="files" style="display:none" onChange="vm.changeFileText()">
+								<div class="input-append">
+									<input id="photocover"  class="form-control"  type="text" style="height:30px;" v-model="rule.paramFile">
+									<a class="btn btn-default" onclick="$('input[id=leftFile]').click();">浏览</a>
+								</div>
+							</div>
+						</form>
+						<div class="form-group" v-show="rule.ruleSource === '2'" style="display:none;">
+							<label for="exampleInputFile">调用类名( 请预先将类文件放置 sourceclass包下)</label> 
+							<input type="text" class="form-control" v-model="rule.className" id="exampleInputFile" />
+							<label for="methodName">调用方法名(默认参数index)</label>
+							<input type="text" class="form-control" v-model="rule.methodName" id="methodName"/>
+						</div>
+						
+						<div class="col-md-6 column"></div>
+						<div class="col-md-6 column" style="text-align:right">
+								<button type="button"  class="btn btn-default btn-info" onClick="uploadFiles()">保存</button>
+						</div>
+					</div>
+					<div class="col-md-4 column">
+						<router-view></router-view>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+// 根据source 判断是否上传参数文件，并提交保存规则内容
+function uploadFiles(){
+	var source = vm.rule.ruleSource;
+	if(source==="1"){
+		var uploadFormData = new FormData($("#uploadForm")[0]);
+		$.ajax({
+			url:'/GeneratorDataWeb/rule/uploadFile.do',
+			type:'POST',
+			data:uploadFormData,
+			dataType:'text',
+			contentType:false,
+			processData:false,
+			success:function(data){
+				alert("文件传输完毕！");
+				vm.rule.paramFile=data;
+				vm.submitModuleData();
+			},
+			error:function(data){
+				alert("文件上传失败！");
+			}
+		});
+	}else{
+		vm.submitModuleData();
+	}
+}
+
+const router = new VueRouter({
+	routes:[{
+		path:'/:sss'
+	}]
+}) 
+
+var vm = new Vue({
+	  el: '#DataMuduleDiv1',
+	  data: {
+		  rule:{ruleName:'T',ruleSource:'2',paramFile:'参数文件',className:'GeneratorTruleString',methodName:'getTString'},
+		  backMessage:''
+	  },
+      mounted() {
+      },
+	  methods:{
+		  changeFileText:function(){
+			  this.rule.paramFile=$("#leftFile").val();
+		  },
+		  submitModuleData:function(){
+			  console.log(this.rule);
+			  this.$http({
+				  method:'POST',
+				  url:'/GeneratorDataWeb/rule/add.do',
+				  body:{'rule':JSON.stringify(this.rule)},
+				  emulateJSON:true,  //允许body带接送传输
+					headers: {
+						dataType:"json", 
+						contentType:"application/json"
+                }
+			  }).then(response => {
+				  alert("处理成功！稍后跳转到列表页面……");
+				  window.location.href="listRule.html";
+			  }, response => {
+				  alert("处理出现异常！");
+			  });
+		  }
+	  },
+	  router
+	})
+</script>

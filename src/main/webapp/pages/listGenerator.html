@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>造数模板列表</title>
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.v3.0.3.css" />
+<link rel="stylesheet" type="text/css" href="../css/dataTables.min.v1.10.16.css" />
+<script type="text/javascript" src="../js/jquery.v2.2.4.js"></script>
+<script type="text/javascript" src="../js/dataTables.min.v1.10.16.js"></script>
+<script type="text/javascript" src="../js/common.js"></script>
+<script type="text/javascript" src="../js/vue.min.v2.2.2.js"></script>
+<script type="text/javascript" src="../js/vue-resource.min.v1.3.1.js"></script>
+<script type="text/javascript" src="../js/vue-router.v3.0.0.js"></script>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="panel panel-default" id="topDiv"></div>
+
+		<!-- 	表格list -->
+		<div id="listGeneratorDiv" class="row-fluid">
+			<div class="col-md-2" id="navigationDiv"></div>
+			<div class="col-md-10" v-show="genData.gid === ''">
+				<!-- 定义一个表格元素 -->
+				<table id="example" class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th></th>
+							<th>序号</th>
+							<th>模板名称</th>
+							<th>起始机构号</th>
+							<th>终止机构号</th>
+							<th>机构文件数</th>
+							<th>文件记录数</th>
+							<th>文件输出路径</th>
+							<th>最新操作时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+				<input id="delButton" type="button" value="删除选中项" />
+			</div>
+
+			<!-- set properties Div -->
+			<div class="col-md-10" v-show="genData.gid != ''" style="display: none;">
+				<div class="col-md-2"></div>
+				<div class="col-md-6">
+					<form class="form-horizontal" role="form">
+						<div class="form-group">
+							<label>模板名称</label> 
+							<input type="text" class="form-control" v-model="genData.modulename" readonly="true" />
+						</div>
+						<div class="form-group">
+							<label>起始机构</label> 
+							<input type="text" class="form-control" v-model="genData.startorg" />
+						</div>
+						<div class="form-group">
+							<label>终止机构</label> 
+							<input type="text" class="form-control" v-model="genData.endorg" />
+						</div>
+						<div class="form-group">
+							<label>机构文件数</label> 
+							<input type="text" class="form-control" v-model="genData.filenum" />
+						</div>
+						<div class="form-group">
+							<label>文件记录数</label> 
+							<input type="text" class="form-control" v-model="genData.filesize" />
+						</div>
+						<div class="form-group">
+							<label>文件输出地址</label> 
+							<input type="text" class="form-control" v-model="genData.filebasepath" />
+						</div>
+						
+						<hr style="height: 1px; border: none; border-top: 1px solid #555555;">
+						
+						<!--  循环生成rule列表 -->
+						<div class="form-group" v-for="rule in genData.moduleRuleList">
+							<div v-show="rule.paramIndex===0">
+								<div class="form-group" v-show="rule.paramType===0"><label>文件名</label> </div>
+								<div class="form-group" v-show="rule.paramType===1"><label>文件头</label> </div>
+								<div class="form-group" v-show="rule.paramType===2"><label>文件模板</label> </div>
+							</div>
+							
+							<label>参数{{rule.paramIndex}}_{{rule.ruleName}} : 起始位置</label> &nbsp;
+							<input type="radio" v-bind:name="rule.id" value="0" v-model="rule.flag" >机构级别
+							<input type="radio" v-bind:name="rule.id" value="1" v-model="rule.flag" >文件级别
+							<input type="radio" v-bind:name="rule.id" value="2" v-model="rule.flag" >记录级别
+							<input type="text" class="form-control" v-model="rule.startIndex" />
+						</div>
+						<div>
+							<div class="col-md-6 column"></div>
+							<div class="col-md-6 column" style="text-align: right">
+								<button type="button" v-on:click="goList" class="btn btn-default btn-info">返回</button>
+								<button type="button" v-on:click="submitGenraotr" class="btn btn-default btn-info">保存</button>
+								<button type="button" @click="startGenerator" class="btn btn-defaulut btn-success">造数(保存)</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="col-md-2"></div>
+			</div>
+
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var vues = new Vue({
+		el:'#listGeneratorDiv',
+		data:{
+			genData:{gid:'',modulename:'',startorg:'',endorg:'',fileNum:'',filesize:'',filebasepath:'',moduleRuleList:[]},
+			delGidArray:[],
+			delGid:''
+		},
+		methods:{
+			goList:function(){
+				this.genData.gid = ''
+			},
+			submitGenraotr:function(){
+				console.log(this.genData);
+				this.$http({
+					method:'POST',
+					url:'/GeneratorDataWeb/generator/submit.do',
+					body:{"generator":JSON.stringify(this.genData)},
+					emulateJSON:true,
+					headers: {
+						dataType:"json", 
+						contentType:"application/json"
+	          		}
+				}).then(response => {
+					alert("处理完成，稍后跳转到列表页面……");
+					window.location.href="listGenerator.html";
+				}, response => {
+					  alert("处理异常!");
+				});
+			},
+			startGenerator:function(){
+				console.log(this.genData);
+				this.$http({
+					method:'POST',
+					url:'/GeneratorDataWeb/generator/startGenerator.do',
+					body:{"generator":JSON.stringify(this.genData)},
+					emulateJSON:true,
+					headers: {
+						dataType:"json", 
+						contentType:"application/json"
+	          		}
+				}).then(response => {
+					alert("处理完成，稍后跳转到列表页面……");
+// 					window.location.href="listGenerator.html";
+				}, response => {
+					  alert("处理异常");
+				});
+			},
+// 			获取造数的相关信息
+			getGeneratorData:function(){
+				this.$http({
+					method:'GET',
+					url:'/GeneratorDataWeb/generator/getGen/'+this.genData.gid+'.do',
+					emulateJSON:true, //允许body带接送传输
+					headers: {
+						dataType:"json", 
+						contentType:"application/json"
+	          		}
+				}).then(response => {
+					this.genData = response.body.generator;
+					this.genData.moduleRuleList = response.body.linkedRule;
+					console.log(response.body);
+				},response => {
+					  console.log("反馈出现问题！");
+				});
+			},
+// 			批量删除
+			delGeneratorList:function(){
+				this.$http({
+					method:"POST",
+					url:"/GeneratorDataWeb/generator/delete.do",
+					body:{"gidList":JSON.stringify(this.delGidArray)},
+					emulateJSON:true,
+					headers: {
+						dataType:"json", 
+						contentType:"application/json"
+	          		}
+				}).then(reponse => {
+					console.log(reponse.text);
+					tblGenerator.rows(".x").remove().draw(false);
+				},response => {
+					console.log("反馈出现问题！");
+				});
+			},
+// 			删除
+			delGeneratorOne:function(){
+				this.$http({
+					method:'GET',
+					url:'/GeneratorDataWeb/generator/delete/'+this.delGid+".do",
+					emulateJSON:true,
+					headers: {
+						dataType:"json", 
+						contentType:"application/json"
+	          		}
+				}).then(response=>{
+					console.log(response.text);
+					tblGenerator.row(".d").remove().draw(false);
+				},response=>{
+					console.log("反馈出现问题！");
+				});
+			}
+		}
+	})
+	
+
+	/*加载表格数据代码片段*/
+	var tblGenerator = $('#example').DataTable({
+						ajax : {
+							//指定数据源
+							url:"/GeneratorDataWeb/generator/getAll.do"
+						},
+						//每页显示三条数据
+						pageLength : 10,
+						columns : [ {
+							"data" : "gid","width":"10px"
+						},{
+							"data" : null
+						//此列不绑定数据源，用来显示序号
+						}, {
+							"data" : "modulename"
+						}, {
+							"data" : "startorg"
+						}, {
+							"data" : "endorg"
+						} , {
+							"data" : "filenum"
+						} , {
+							"data" : "filesize"
+						} , {
+							"data" : "filebasepath"
+						} , {
+							"data" : "updatetime"
+						} , {
+							"data" : "gid","width":"100px"
+						} ],
+						"columnDefs" : [
+								{
+									"render" : function(data, type, row, meta){
+										return '<input id="'+data+'" type="checkbox" name="checkList" value="'+data+'">';
+									},
+									"targets":0
+								},
+								{
+									"render" : function(data, type, row, meta) {
+										//渲染 把数据源中的标题和url组成超链接 target="_blank"
+										return '<a href=# onClick=\'goSetPropDiv('+data+')\'>设置文件参数</a>'
+												+'&nbsp;'
+												+'<input gid="'+data+'" type="image" src="../images/delete.jpg" style="width:25px;height:25px"  value="删除">';
+									},
+									//指定是第2列
+									"targets" : 9
+								},
+								]
+					});
+	//前台添加序号
+	tblGenerator.on('order.dt search.dt', function() {
+		tblGenerator.column(1, {
+			"search" : 'applied',
+			"order" : 'applied'
+		}).nodes().each(function(cell, i) {
+			cell.innerHTML = i + 1;
+		});
+	}).draw();
+	
+	tblGenerator.on("click","input[type=checkbox]",function(){
+		$(this).parents("tr").toggleClass('x');
+		if($(this).is(':checked')){
+			vues.delGidArray.push($(this).attr("value"));
+		}else{
+			vues.delGidArray.splice($.inArray($(this).attr("value"),vues.delGidArray),1);
+		}
+		console.log(vues.delGidArray);
+	});
+	
+	tblGenerator.on("click","input[type=image]",function(){
+		console.log($(this).attr("gid"));
+		vues.delGid = $(this).attr("gid");
+		if(confirm("确认删除该项？")){
+			$(this).parents("tr").toggleClass('d');
+			vues.delGeneratorOne();
+		}
+	});
+	
+	$("#delButton").click(function(){
+		console.log(vues.delGidArray);
+		if(confirm("确认删除以上"+vues.delGidArray.length+"项？")){
+			vues.delGeneratorList();
+		}
+	});
+
+// 	跳转到generator参数设置div
+	function goSetPropDiv(data){
+		vues.genData.gid = data;
+		vues.getGeneratorData();
+	}
+
+</script>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>参数规则列表</title>
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.v3.0.3.css" /> 
+	<link rel="stylesheet" type="text/css" href="../css/dataTables.min.v1.10.16.css" /> 
+	<script type="text/javascript" src="../js/jquery.v2.2.4.js"></script> 
+	<script type="text/javascript" src="../js/dataTables.min.v1.10.16.js"></script> 
+	<script type="text/javascript" src="../js/common.js"></script>
+	<script type="text/javascript" src="../js/vue.min.v2.2.2.js"></script>
+	<script type="text/javascript" src="../js/vue-resource.min.v1.3.1.js"></script>
+	<script type="text/javascript" src="../js/vue-router.v3.0.0.js"></script>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="panel panel-default" id="topDiv"></div>
+		<div id="ruleListDiv" class="row-fluid">
+			<div class="col-md-2" id="navigationDiv">
+			</div>
+			<div class="col-md-10">
+				<!-- 定义一个表格元素 -->
+				<table id="example" class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th></th>
+							<th>序号</th>
+							<th>规则名称</th>
+							<th>规则来源</th>
+							<th>参数文件(服务器地址)</th>
+							<th>参数Class</th>
+							<th>参数Method</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+				<input id="delButton" type="button" value="删除勾选项">
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var vueObj = new Vue({
+		el:"#ruleListDiv",
+		data:{
+			ruleIdStr:'',
+			ruleList:[]
+		},
+		methods:{
+			delRuleList:function(){
+				this.$http({
+					method:"POST",
+					url:"/GeneratorDataWeb/rule/delete.do",
+					body:{
+						ruleId:JSON.stringify(this.ruleList)
+					},
+					emulateJSON:true,
+					headers: {
+						dataType:"json", 
+						contentType:"application/json"
+	          		}
+				}).then(response=>{
+					console.log(response.text);
+					tblRule.rows(".x").remove().draw(false);
+				},response => {
+					console.log("反馈出现问题！");
+				});
+			},
+			delRule:function(){
+				this.$http({
+					method:'GET',
+					url:'/GeneratorDataWeb/rule/delete/'+this.ruleIdStr+".do",
+					emulateJSON:true,
+					headers: {
+						dataType:"json", 
+						contentType:"application/json"
+	          		}
+				}).then(response=>{
+					console.log(response.text);
+					tblRule.row(".d").remove().draw(false);
+				},response =>{
+					console.log("反馈出现问题！");
+				});
+			}
+		}
+	
+	});
+
+	/*Javascript代码片段*/
+	var tblRule = $('#example').DataTable({
+						ajax : {
+							//指定数据源
+							url:"/GeneratorDataWeb/rule/getAllJSon.do"
+						},
+						//每页显示三条数据
+						pageLength : 10,
+						columns : [ {
+							"data" : "ruleId"
+						},{
+							"data" : null
+						//此列不绑定数据源，用来显示序号
+						}, {
+							"data" : "ruleName"
+						}, {
+							"data" : "ruleSource"
+						}, {
+							"data" : "paramFile"
+						} , {
+							"data" : "className"
+						} , {
+							"data" : "methodName"
+						} , {
+							"data" : "ruleId"
+						} ],
+						"columnDefs" : [
+								{
+									"render" : function(data,type,row,meta){
+										return '<input id="'+data+'" type="checkbox"  name="checkList"  value="'+data+'"/>';
+									},
+									"targets" : 0
+								},
+								{
+									"render":function(data,type,row,meta){
+										switch(data){
+											case 1: return "参数文件";break;
+											case 2: return "生成程序";break;
+										}
+									},
+									"targets":3
+								},
+								{
+									"render" : function(data, type, row, meta) {
+										//渲染 把数据源中的标题和url组成超链接 target="_blank"
+										return '<input rid="'+data+'" type="image" src="../images/delete.jpg" style="width:25px;height:25px"  value="删除">';
+									},
+									//指定是第2列
+									"targets" : 7
+								},
+								]
+
+					});
+
+	//前台添加序号
+	tblRule.on('order.dt search.dt', function() {
+		tblRule.column(1, {
+			"search" : 'applied',
+			"order" : 'applied'
+		}).nodes().each(function(cell, i) {
+			cell.innerHTML = i + 1;
+		});
+	}).draw();
+	
+// 	批量删除
+	$("#delButton").click(function(){
+		console.log(vueObj.ruleList);
+		if(confirm("确认删除以上"+vueObj.ruleList.length+"项？")){
+			vueObj.delRuleList();
+		}
+	});
+	
+// 	标识批量删除的记录标识
+	tblRule.on("click","input[type=checkbox]",function(){
+		$(this).parents("tr").toggleClass('x');
+		if($(this).is(':checked')){
+			vueObj.ruleList.push($(this).attr("value"));
+		}else{
+			vueObj.ruleList.splice($.inArray($(this).attr("value"),vueObj.ruleList),1);
+		}
+	});
+	
+// 	删除
+	tblRule.on('click',"input[type=image]",function(){
+		vueObj.ruleIdStr=$(this).attr("rid");
+		if(confirm("确认删除该项？")){
+			$(this).parents("tr").toggleClass('d');
+			vueObj.delRule();
+		}
+	});
+
+</script>
+</html>
