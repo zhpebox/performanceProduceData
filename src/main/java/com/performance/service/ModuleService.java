@@ -22,5 +22,7 @@ public interface ModuleService {
 	public int deleteModule(String midList);
 
 	public int deleteModuleOne(String mid);
+
+	public int updateMudule(String moduleData);
 	
 }

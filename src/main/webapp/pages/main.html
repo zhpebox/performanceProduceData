@@ -133,7 +133,9 @@ var vueObj = new Vue({
 								{
 									"render" : function(data, type, row, meta) {
 										//渲染 把数据源中的标题和url组成超链接 target="_blank"
-										return '<a href=pages/linkModuleRule.html#/' + data + ' >关联规则 </a>'
+										return '<a href=pages/linkModuleRule.html#/' + data + ' >关联 </a>'
+												+'&nbsp;'
+												+'<a href=pages/moduleDetail.html#/' + data + ' >详情</a>'
 												+'&nbsp;'
 												+'<input mid="'+data+'" type="image" src="images/delete.jpg" style="width:25px;height:25px" value="删除"/>';
 									},

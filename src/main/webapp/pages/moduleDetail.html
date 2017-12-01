@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>新增模板</title>
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.v3.0.3.css" /> 
+<script type="text/javascript" src="../js/jquery.v2.2.4.js"></script> 
+<script type="text/javascript" src="../js/vue.min.v2.2.2.js"></script>
+<script type="text/javascript" src="../js/vue-resource.min.v1.3.1.js"></script>
+<script type="text/javascript" src="../js/vue-router.v3.0.0.js"></script>
+<script type="text/javascript" src="../js/common.js"></script>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="panel panel-default" id="topDiv"></div>
+		<div class="row-fluid">
+			<div class="col-md-2" id="navigationDiv"></div>
+			<div class="col-md-10">
+				<div id="DataMuduleDetailDiv" class="row clearfix">
+					<div class="col-md-2 column"></div>
+					<div class="col-md-6 column">
+						<form class="form-horizontal" role="form">
+							<div class="form-group">
+								<label>模板名称</label> 
+								<input type="text" class="form-control" v-model="module.moduleName"/>
+							</div>
+							<div class="form-group">
+								<label>文件名</label> 
+								<input type="text" class="form-control" v-model="module.fileName"/>
+							</div>
+							<div class="form-group">
+								<label>文件头</label> 
+								<input type="text" class="form-control" v-model="module.fileHeader"/>
+							</div>
+							<div class="form-group">
+								<label>模板</label>
+								<textarea class="form-control" rows="10" v-model="module.moduleText"></textarea>
+							</div>
+							<div class="col-md-6 column"></div>
+							<div class="col-md-6 column" style="text-align: right">
+								<button type="button" v-on:click="submitModuleData" class="btn btn-default btn-success">保存</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+
+//定义路由
+	const router = new VueRouter({
+		routes:[{
+			path:'/:muduleId'
+		}]
+	});
+
+
+	new Vue({
+	  el: '#DataMuduleDetailDiv',
+	  mounted(){
+		  this.getModuleData();
+	  },
+	  data: {
+		  module:{moduleId:'',moduleName:'模板名称',moduleText:'模板内容'}
+	  },
+	  methods:{
+		  //提交保存新增的模板信息
+		  submitModuleData:function(){
+			  if(confirm("确认提交修改？")){
+				  this.$http({
+					  method:'POST',
+					  url:'/GeneratorDataWeb/module/update.do',
+					  body:{'moduleData':JSON.stringify(this.module)},
+					  emulateJSON:true, //允许body带接送传输
+						headers: {
+							dataType:"json", 
+							contentType:"application/json"
+	                	}
+				  }).then(response => {
+					  this.module.moduleId=response.bodyText;
+					  if(!isNaN(this.module.moduleId)){
+						  alert("处理成功！");
+					  }else{
+						  alert("处理失败！");
+					  }
+				  }, response => {
+					  console.log("反馈出现问题！");
+				  });
+			  }
+		  },
+		  getModuleData:function(){
+			  this.$http({
+				  method:'GET',
+				  url:'/GeneratorDataWeb/module/get/'+ this.$route.params.muduleId+".do",
+				  emulateJSON:true, //允许body带接送传输
+					headers: {
+						dataType:"json", 
+						contentType:"application/json"
+		      		}
+			  }).then(response => {
+				  this.module = response.body;
+			  },response => {
+				  console.log("反馈出现问题！");
+			  });
+		  },
+		  goRuleModule:function(){
+			  window.location.href="/GeneratorDataWeb/pages/setModuleRule.html#/"+this.module.moduleId;
+		  }
+	  },
+	  router
+	});
+</script>

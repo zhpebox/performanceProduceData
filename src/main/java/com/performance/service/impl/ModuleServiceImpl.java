@@ -42,6 +42,17 @@ public class ModuleServiceImpl implements ModuleService {
 		}
 		return tblModule.getModuleId();
 	}
+	
+	@Override
+	public int updateMudule(String moduleData) {
+		TblModule tblModule = JSON.parseObject(moduleData, new TypeReference<TblModule>() {});
+		int result = tblModuleMapper.updateByPrimaryKeySelective(tblModule);
+		if(result!=1) {
+			logger.error("module 更新数据库失败！"+tblModule.toString());
+			return 0;
+		}
+		return tblModule.getModuleId();
+	}
 
 	@Override
 	public String getModuleById(String moduleId) {

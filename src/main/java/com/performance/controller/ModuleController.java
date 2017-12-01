@@ -44,6 +44,20 @@ public class ModuleController {
 	}
 	
 	/**
+	 * 修改
+	 * @return
+	 */
+	@RequestMapping(value="/update",method=RequestMethod.POST,produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public String updateDataModule(@RequestParam(value="moduleData",defaultValue="")String moduleData) {
+		logger.info(" Controller: /module/add moduleData="+moduleData);
+		int updateResult = moduleService.updateMudule(moduleData);
+		String result = updateResult!=0?String.valueOf(updateResult):"处理失败";
+		logger.debug(" Controller: /module/update moduleData="+moduleData+" result="+updateResult);
+		return result;
+	}
+	
+	/**
 	 * 针对具体module关联相关规则
 	 * @param moduleRuleData
 	 * @return
