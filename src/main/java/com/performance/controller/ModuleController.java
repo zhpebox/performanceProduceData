@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import com.performance.model.TblModule;
+import com.performance.service.GeneratorService;
 import com.performance.service.ModuleRuleService;
 import com.performance.service.ModuleService;
 
@@ -27,6 +31,9 @@ public class ModuleController {
 	
 	@Autowired
 	private ModuleRuleService moduleRuleService;
+	
+	@Autowired
+	private GeneratorService generatorService;
 	
 	/**
 	 * 保存提交module信息
@@ -51,7 +58,17 @@ public class ModuleController {
 	@ResponseBody
 	public String updateDataModule(@RequestParam(value="moduleData",defaultValue="")String moduleData) {
 		logger.info(" Controller: /module/add moduleData="+moduleData);
-		int updateResult = moduleService.updateMudule(moduleData);
+		TblModule tblModule = JSON.parseObject(moduleData, new TypeReference<TblModule>() {});
+
+		//首先判断待更新项，是否已使用，如果已使用，禁止修改
+		int size = generatorService.selectNumExistData(tblModule.getModuleId());
+		if(size>0) {
+			logger.debug("genger表中已使用模板id="+tblModule.getModuleId()+" 次数"+size+"次"); 
+			return "该模板已用于造数过程，请勿修改！";
+		}
+
+		//更新模板信息
+		int updateResult = moduleService.updateMudule(tblModule);
 		String result = updateResult!=0?String.valueOf(updateResult):"处理失败";
 		logger.debug(" Controller: /module/update moduleData="+moduleData+" result="+updateResult);
 		return result;

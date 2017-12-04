@@ -1,5 +1,6 @@
 package com.performance.service;
 
+import com.performance.model.TblModule;
 
 public interface ModuleService {
 	
@@ -23,6 +24,6 @@ public interface ModuleService {
 
 	public int deleteModuleOne(String mid);
 
-	public int updateMudule(String moduleData);
+	public int updateMudule(TblModule moduleData);
 	
 }

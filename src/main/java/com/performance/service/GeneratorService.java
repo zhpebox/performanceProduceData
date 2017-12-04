@@ -21,4 +21,11 @@ public interface GeneratorService {
 	public int deleteGenerator(String gidArray);
 
 	public int deleteGeneratorOne(String gid);
+	
+	/**
+	 * 按照moduleId查询模板是否在generator表中
+	 * @param mid
+	 * @return int 存在的个数
+	 */
+	public int selectNumExistData(int mid);
 }

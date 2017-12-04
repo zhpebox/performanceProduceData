@@ -143,4 +143,16 @@ public class GeneratorServiceImpl implements GeneratorService {
 		return result;
 	}
 
+	@Override
+	public int selectNumExistData(int mid) {
+		TblGeneratorExample example = new TblGeneratorExample();
+		TblGeneratorExample.Criteria criteria = example.createCriteria();
+		criteria.andModuleidEqualTo(mid);
+		
+		List<TblGenerator> resultList = tblGeneratorMapper.selectByExample(example);
+		
+		return resultList.size();
+		
+	}
+
 }
