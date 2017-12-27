@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>参数规则列表</title>
+	
+	 
+	
+</head>
+<body>
+C
+	<div class="container" style="width:100%;">
+		<div class="col-md-8 column">
+		</div>
+		<div class="col-md-4 column">
+			<div id="login-box" style="margin-top:52%;margin-left:3px;padding:10px;background:#87CEFA;border-radius:20px;">
+				<form role="form">
+					<div class="form-group">
+						 <label for="exampleInputEmail1">用户名：</label>
+						 <input type="text" class="form-control" v-model="user.name" id="exampleInputEmail1" />
+					</div>
+					<div class="form-group">
+						 <label for="exampleInputPassword1">密   码：</label>
+						 <input type="password" class="form-control" v-model="user.pwd"  id="exampleInputPassword1" />
+					</div>
+					<div class="form-group">
+						 <a href="#">忘记密码</a>
+						 <a href="#">新用户注册</a>
+					</div>
+					<div class="form-group" style="text-align:right;">
+						<button type="submit" class="btn btn-default" style="margin-right:3px" v-on:click="submitLogin">登陆</button>
+					</div> 
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var url = window.location.href;
+	//判断是否绝对路径访问
+	if(url.indexOf("pages")==-1){
+		document.body.style.backgroundImage="url(images/backgrouda.png)";
+		document.write(
+				"<link rel='stylesheet' type='text/css' href='css/bootstrap.v3.0.3.css' /> "+
+				"<link rel='stylesheet' type='text/css' href='css/dataTables.min.v1.10.16.css' />"+ 
+				"<script type='text/javascript' src='js/jquery.v2.2.4.js'><\/script> "+
+				"<script type='text/javascript' src='js/dataTables.min.v1.10.16.js'><\/script>" +
+				"<script type='text/javascript' src='js/common.js'><\/script>"+
+				"<script type='text/javascript' src='js/vue.min.v2.2.2.js'><\/script>"+
+				"<script type='text/javascript' src='js/vue-resource.min.v1.3.1.js'><\/script>"+
+				"<script type='text/javascript' src='js/vue-router.v3.0.0.js'><\/script>"
+		); 
+	} else {
+		document.body.style.backgroundImage="url(../images/backgrouda.png)";
+		document.write(
+				"<link rel='stylesheet' type='text/css' href='../css/bootstrap.v3.0.3.css' /> "+
+				"<link rel='stylesheet' type='text/css' href='../css/dataTables.min.v1.10.16.css' />"+ 
+				"<script type='text/javascript' src='../js/jquery.v2.2.4.js'><\/script> "+
+				"<script type='text/javascript' src='../js/dataTables.min.v1.10.16.js'><\/script>" +
+				"<script type='text/javascript' src='../js/common.js'><\/script>"+
+				"<script type='text/javascript' src='../js/vue.min.v2.2.2.js'><\/script>"+
+				"<script type='text/javascript' src='../js/vue-resource.min.v1.3.1.js'><\/script>"+
+				"<script type='text/javascript' src='../js/vue-router.v3.0.0.js'><\/script>"
+		); 
+	}
+</script>
+<script type="text/javascript">
+var LoginVue = new Vue({
+	el:"#login-box",
+	data:{
+		user:{name:'think',pwd:'123456'}
+	},
+	methods:{
+		submitLogin:function(){
+			this.$http({
+				method:'POST',
+				url:'/GeneratorDataWeb/auth/login.do',
+				body:{
+					'auth':JSON.stringify(this.user)
+				},
+				emulateJSON:true,
+				headers: {
+					dataType:"json", 
+					contentType:"application/json"
+	      		}
+			}).then(response=>{
+				console.log(response.text);
+				tblRule.rows(".x").remove().draw(false);
+			},response => {
+				console.log("反馈出现问题！");
+			});
+		}
+	}
+	
+});
+
+</script>
+
+</html>
