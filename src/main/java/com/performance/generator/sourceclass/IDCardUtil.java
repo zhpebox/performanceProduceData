@@ -49,8 +49,9 @@ public class IDCardUtil {
 	 * 1. 地区码前六位无校验 取值范围 000000~999999
 	 */
 	private static String genAreaCode() {
-		if (areaCode >= 6932)
+		if (areaCode >= 6932) {
 			areaCode = 0;
+		}
 		int temp = areaCode++;
 		return areaCodeObjArray[temp].getAreaCodeNumStr();
 	}

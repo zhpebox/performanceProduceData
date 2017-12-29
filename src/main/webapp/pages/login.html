@@ -8,7 +8,6 @@
 	
 </head>
 <body>
-C
 	<div class="container" style="width:100%;">
 		<div class="col-md-8 column">
 		</div>
@@ -28,7 +27,7 @@ C
 						 <a href="#">新用户注册</a>
 					</div>
 					<div class="form-group" style="text-align:right;">
-						<button type="submit" class="btn btn-default" style="margin-right:3px" v-on:click="submitLogin">登陆</button>
+						<button type="button" class="btn btn-default" style="margin-right:3px" v-on:click="submitLogin">登陆</button>
 					</div> 
 				</form>
 			</div>
@@ -84,8 +83,7 @@ var LoginVue = new Vue({
 					contentType:"application/json"
 	      		}
 			}).then(response=>{
-				console.log(response.text);
-				tblRule.rows(".x").remove().draw(false);
+				console.log(response);
 			},response => {
 				console.log("反馈出现问题！");
 			});

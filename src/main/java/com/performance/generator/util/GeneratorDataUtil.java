@@ -118,7 +118,7 @@ public class GeneratorDataUtil {
 	
 	public static void syncRedis(String tableName) {
 		System.out.println("B");
-		ExecutorService es = Executors.newSingleThreadExecutor();
+		ExecutorService es = Executors.newFixedThreadPool(1);
 		es.execute(new Runnable() {
 			@Override
 			public void run() {

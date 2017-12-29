@@ -25,7 +25,7 @@ public interface CommonVariable {
 	/**
 	 * 机构代码起始位置
 	 */
-	public static final long orgcode_start_index = 88000000000000L;
+	public static final long ORGCODE_START_INDEX = 88000000000000L;
 	
 	/**
 	 * 上传文件前缀

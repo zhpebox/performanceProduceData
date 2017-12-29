@@ -121,7 +121,7 @@ public class GeneratorComponent {
 	private void genratorFile4org(int orgIndex, String fileIndex, TblGenerator genrator, TblModule module) throws IOException {
 
 		// 生成文件路径
-		String basePathStr = genrator.getFilebasepath() + "/" + CommonVariable.orgcode_start_index+orgIndex + "/";
+		String basePathStr = genrator.getFilebasepath() + "/" + CommonVariable.ORGCODE_START_INDEX+orgIndex + "/";
 		File basePath = new File(basePathStr);
 		if (!basePath.exists()) {
 			basePath.mkdirs();

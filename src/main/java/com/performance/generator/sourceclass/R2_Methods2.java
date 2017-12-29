@@ -9,7 +9,7 @@ public class R2_Methods2 {
 	
 	/*fileName*/
 	public static String getOrgCode(int index){
-		return String.valueOf(CommonVariable.orgcode_start_index+index);
+		return String.valueOf(CommonVariable.ORGCODE_START_INDEX+index);
 	}
 	
 	public static String getDateStr(int index){
