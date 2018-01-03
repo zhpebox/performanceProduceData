@@ -3,6 +3,10 @@ package com.performance.controller;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +35,16 @@ public class AuthController {
 	@RequestMapping(value="/login",method=RequestMethod.POST)
 	@ResponseBody
 	public String loginAction(String auth,HttpServletRequest request) {
+		String result = "N";
 		logger.info("Controller /auth/login  参数为:"+auth);
-		authService.validateAuth(auth);
+		result = authService.validateAuth(auth);
 		HttpSession session = request.getSession();
 		Cookie cookie = new Cookie("u", "zhp");
 		request.getCookies();
 		
-		return "YY";
+		
+		
+		return result;
 	}
 	
 }

@@ -1,7 +1,7 @@
 <!-- 菜单页 -->
 <ul class="nav nav-list well">
 	<li class="nav-header">模板</li>
-	<li id="mainLi"><a href="..">模板列表</a></li>
+	<li id="mainLi"><a href="main.html">模板列表</a></li>
 	<li id="addModuleLi"><a href="addModule.html">新增模板</a></li>
 	<li class="nav-header">规则</li>
 	<li id="listRuleLi"><a href="listRule.html">规则列表</a></li>
@@ -23,6 +23,8 @@ $().ready(function(){
 	}else if(isContain(url, "listGenerator")){
 		$("#listGeneratorLi").css({"background":"#87CEFA","border-radius":"5px"});
 	}else if(isContain(url,"linkModuleRule")){
+		$("#mainLi").css({"background":"#87CEFA","border-radius":"5px"});
+	}else if(isContain(url,"main")){
 		$("#mainLi").css({"background":"#87CEFA","border-radius":"5px"});
 	}
 });
