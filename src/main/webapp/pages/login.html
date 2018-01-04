@@ -3,32 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <title>参数规则列表</title>
+
+<style type="text/css">
+body {
+	font-family:'Microsoft YaHei';
+	width: 100%;
+	height: auto;
+	background: url("images/login.jpg") no-repeat;
+	background-size: 100%;
+}
+
+.abc {
 	
-	 
-	
+	font-size: 30px;
+	color: #00F;
+	font-style: italic
+}
+</style>
 </head>
 <body>
-	<div class="container" style="width:100%;">
-		<div class="col-md-8 column">
+	<div class="container" style="width: 100%;">
+		<div>
+			<div style="text-align: center; font-size: 80px;">
+				<strong>报 文 生 成 工 具</strong> <br /> 
+				<small class="abc">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--------性能测试</small>
+			</div>
 		</div>
+		<div class="col-md-4 column"></div>
 		<div class="col-md-4 column">
-			<div id="login-box" style="margin-top:52%;margin-left:3px;padding:10px;background:#87CEFA;border-radius:20px;">
+			<div id="login-box"
+				style="margin-top: 30%; margin-left: 3px; padding: 10px; background: #87CEFA; border-radius: 20px;">
 				<form role="form">
 					<div class="form-group">
-						 <label for="exampleInputEmail1">用户名：</label>
-						 <input type="text" class="form-control" v-model="user.name" id="exampleInputEmail1" />
+						<label for="exampleInputEmail1">用户名：</label> 
+						<input type="text" class="form-control" v-model="user.name" id="exampleInputEmail1" />
 					</div>
 					<div class="form-group">
-						 <label for="exampleInputPassword1">密   码：</label>
-						 <input type="password" class="form-control" v-model="user.pwd"  id="exampleInputPassword1" />
+						<label for="exampleInputPassword1">密 码：</label> 
+						<input type="password" class="form-control" v-model="user.pwd" id="exampleInputPassword1" />
 					</div>
 					<div class="form-group">
-						 <a href="#">忘记密码</a>
-						 <a href="#">新用户注册</a>
+						<a href="#">忘记密码</a> <a href="#">新用户注册</a>
 					</div>
-					<div class="form-group" style="text-align:right;">
-						<button type="button" class="btn btn-default" style="margin-right:3px" v-on:click="submitLogin">登陆</button>
-					</div> 
+					<div class="form-group" style="text-align: right;">
+						<button type="button" class="btn btn-default" style="margin-right: 3px" v-on:click="submitLogin">登陆</button>
+					</div>
 				</form>
 			</div>
 		</div>
@@ -38,7 +57,6 @@
 	var url = window.location.href;
 	//判断是否绝对路径访问
 	if(url.indexOf("pages")==-1){
-		document.body.style.backgroundImage="url(images/backgrouda.png)";
 		document.write(
 				"<link rel='stylesheet' type='text/css' href='css/bootstrap.v3.0.3.css' /> "+
 				"<link rel='stylesheet' type='text/css' href='css/dataTables.min.v1.10.16.css' />"+ 
@@ -50,7 +68,6 @@
 				"<script type='text/javascript' src='js/vue-router.v3.0.0.js'><\/script>"
 		); 
 	} else {
-		document.body.style.backgroundImage="url(../images/backgrouda.png)";
 		document.write(
 				"<link rel='stylesheet' type='text/css' href='../css/bootstrap.v3.0.3.css' /> "+
 				"<link rel='stylesheet' type='text/css' href='../css/dataTables.min.v1.10.16.css' />"+ 
