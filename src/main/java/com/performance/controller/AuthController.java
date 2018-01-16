@@ -35,16 +35,26 @@ public class AuthController {
 	@RequestMapping(value="/login",method=RequestMethod.POST)
 	@ResponseBody
 	public String loginAction(String auth,HttpServletRequest request) {
-		String result = "N";
-		logger.info("Controller /auth/login  参数为:"+auth);
-		result = authService.validateAuth(auth);
+		logger.debug("Controller /auth/login  参数为:"+auth);
+		
+		String result = authService.validateAuth(auth);
 		HttpSession session = request.getSession();
+		System.out.println("login session id "+session.getId());
 		Cookie cookie = new Cookie("u", "zhp");
 		request.getCookies();
 		
-		
-		
 		return result;
+	}
+	
+	@RequestMapping(value="/logout",method=RequestMethod.GET)
+	@ResponseBody
+	public String logout(HttpServletRequest request) {
+		logger.info("/Controller /auth/logout");
+		HttpSession session = request.getSession();
+		System.out.println("logout session id "+session.getId());
+		String logoutResult = authService.safeLogout();
+		
+		return logoutResult;
 	}
 	
 }

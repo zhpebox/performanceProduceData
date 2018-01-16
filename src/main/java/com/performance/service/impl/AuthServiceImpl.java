@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.performance.commonclass.CommonVariable;
 import com.performance.service.AuthService;
 
 @Service
@@ -26,10 +27,17 @@ public class AuthServiceImpl implements AuthService {
 
 			Subject currentUserSubject = SecurityUtils.getSubject();
 			currentUserSubject.login(token);
-			return "Y";
+			return CommonVariable.LOGIN_SUCCESS;
 		}
 		logger.info("登陆失败 "+authStr);
-		return "N";
+		return CommonVariable.LOGIN_ERROR;
+	}
+
+	@Override
+	public String safeLogout() {
+		Subject currentUser = SecurityUtils.getSubject();
+		currentUser.logout();
+		return CommonVariable.LOGOUT_SUCCESS;
 	}
 
 }

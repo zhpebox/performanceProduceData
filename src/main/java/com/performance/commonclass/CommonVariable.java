@@ -51,4 +51,21 @@ public interface CommonVariable {
 	 * 模板的类型
 	 */
 	public static final int PARAM_TYPE_MODULE = 2;
+	
+	/**
+	 * 登陆验证，登陆成功
+	 */
+	public static final String LOGIN_SUCCESS = "Y";
+	/**
+	 * 登陆验证，登陆失败
+	 */
+	public static final String LOGIN_ERROR = "N";
+	/**
+	 * 注销成功
+	 */
+	public static final String LOGOUT_SUCCESS = "Y";
+	/**
+	 * 注销失败
+	 */
+	public static final String LOGOUT_ERROR = "N";
 }

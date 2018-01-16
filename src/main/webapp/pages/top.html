@@ -4,7 +4,33 @@
 	        <small>报文批量生成工具</small>
 	    </h1>
 	</div>
-	<div class="col-md-2" style="text-align:right">
-		<h3><a href="..">注销</a></h3>
+	<div id="logoutDiv" class="col-md-2" style="text-align:right">
+		<h3><a href="#" v-on:click="goLogout" >注销</a></h3>
 	</div>
 </div>
+<script type="text/javascript" >
+	var a = new Vue({
+		el:'#logoutDiv',
+		methods:{
+			goLogout:function(){
+				this.$http({
+					method:'GET',
+					url:'/GeneratorDataWeb/auth/logout.do',
+					emulateJSON:true, //允许body带接送传输
+					headers: {
+						dataType:"json", 
+						contentType:"application/json"
+                	}
+				}).then(response => {
+					alert("注销成功！");
+					window.location.href="/GeneratorDataWeb/pages/login.html";
+				})
+			}
+		}	
+	
+	});
+// 	function ax(){
+// 		alert("FFF");
+// 		a.goLogout();
+// 	}
+</script>
